@@ -102,7 +102,7 @@ namespace Practicum_1
 
         }
 
-        private void fillWithRandom()
+        public void fillWithRandom()
         {/* fillWithRandom fills a sudoku with randomly generated integers ranging from 1 up untill 9
                 but doesn't add numbers that were in the input 
         */
@@ -144,8 +144,9 @@ namespace Practicum_1
                 }
             }
         }
-        public void sud_initialise ()
-        {
+        public void fillSudoku ()
+        {/* fillSudoku fills a sudoku with the lowest integer that isn't already in the box
+        */
             for(int hb = 0; hb<3;hb++)                            //horizontale boxes 0-2
             {
                 for(int vb = 0; vb<3;vb++)                        //verticale boxes 0-2
@@ -173,23 +174,33 @@ namespace Practicum_1
         }
 
         public void Swap(int x1, int y1, int x2, int y2)
-        {
+        {/* Swap swaps 2 squares in the sudoku
+                - int x1: x-index from square 1
+                - int y1: y-index from square 1
+                - int x2: x-index from square 2
+                - int y2: y-index from square 2
+        */
             (s.board[y1,x1], s.board[y2,x2]) = (s.board[y2, x2], s.board[y1, x1]);
         }
 
-        public int getBoardScore() //kunnen we hier niet beter direct currentscore updaten
-        {
+        public int getBoardScore()
+        {/* getBoardScore checks the whole sudoku board and calculates the heuristic values
+                for each row and collumn, then it is combined to calculate the score.
+        */
             int res = 0;
             for (int i =0; i<9; i++)
             {
                 res += 9 - valsInColumn(i).Count;
                 res += 9 - valsInRow(i).Count;
             }
-            s.currentScore = res;
+            s.currentScore = res; //dit had ik aangepast maar is het ergens nodig om die integer te returnen
             return res;
         }
         public HashSet<int> valsInColumn(int x, int excludeIndex = 10)
-        {
+        {/* valsInColumn returns a hashtable with all values inside a given collumn 
+                - int x: is the index of the collumn
+                - in excludeIndex: is the index that you want to exclude default doesn't exclude an index.
+        */
             HashSet<int> res = new HashSet<int>();
             for (int y =0; y<9; y++)
             {
@@ -202,7 +213,10 @@ namespace Practicum_1
         }
 
         public HashSet<int> valsInRow(int y, int excludeIndex = 10)
-        {
+        {/* valsInColumn returns a hashtable with all values inside a given row 
+                - int y: is the index of the collumn
+                - in excludeIndex: is the index that you want to exclude default doesn't exclude an index.
+        */
             HashSet<int> res = new HashSet<int>();
             for (int x = 0; x < 9; x++)
             {
@@ -215,7 +229,9 @@ namespace Practicum_1
         }
 
         public void RandomWalkStep()
-        {
+        {/* RandomWalkStep generates the coördinates of a random square on the sudokuboard
+                checks if this a movable square and swaps the square if this is the case.
+        */
             //Choose 3x3 section
             int qX = r.Next(3);
             int qY = r.Next(3);
@@ -226,13 +242,13 @@ namespace Practicum_1
             int x2 = r.Next(3);
             int y2 = r.Next(3);
 
-            //misschien ook hier de score updaten zonder alles langs te gaan
-            if (s.unmovable[qY * 3 + y1 ,qX * 3 + x1]|| s.unmovable[qY * 3 + y2 , qX * 3 + x2])
-            {
-                //Console.WriteLine("Swap failed");
+            
+            if (s.unmovable[qY * 3 + y1 ,qX * 3 + x1] || s.unmovable[qY * 3 + y2 , qX * 3 + x2])
+            { // the random generated square in the sudokuboard is one of the numbers in the input
                 RandomWalkStep();
             }
-            else{
+            else
+            { // we are allowed to swap the generated square
                 Swap(qX * 3 + x1, qY * 3 + y1, qX * 3 + x2, qY * 3 + y2);
             }
             
@@ -240,13 +256,6 @@ namespace Practicum_1
 
         public int HillClimbStep(int qX,int qY)
         {
-
-            // int qX = r.Next(3); //random box_x
-            // int qY = r.Next(3); //random box_y
-
-            //Console.WriteLine((qX, qY));
-
-
             //For each square calculate the score change for removing it and for setting it to a certain value.
             int[,] removalPenalties = new int[3, 3];
             int[,,] addBonus = new int[3, 3, 9];
@@ -350,82 +359,81 @@ namespace Practicum_1
         }
 
         public int HillClimbStep2( int qX , int qY) //BestImprovement
-        {
+        {/* HillClimbStep2 is a less efficient way of doing best-improvement within a box
+                it creates a list with the best moves that have either no effect on the score or are an improvement
+                    - it itterates over all squares in the box and generates hashtables of values in the squares rows and collomns
+                        excluding the current square
+                            - for each square 
+
+        */
             int maxScore = 0;
             List<(int, int, int, int)> bestMoves = new List<(int, int, int, int)>();
             for (int y1 = 0; y1 < 3; y1++)
             {
                 for (int x1 = 0; x1 < 3; x1++)
                 {
-                    int currentVal = s.board[qY * 3 + y1, qX * 3 + x1];
-                    HashSet<int> col1 = valsInColumn(qX*3+x1, qY * 3 + y1);
-                    HashSet<int> row1 = valsInRow(qY * 3 + y1, qX * 3 + x1);
-                    bool c1_old = col1.Contains(currentVal);
-                    bool r1_old = row1.Contains(currentVal);
-                    for (int y2 = 0; y2 < 3; y2++)
+                    if (!s.unmovable[qY * 3 + y1, qX * 3 + x1])
                     {
-                        for (int x2 = 0; x2 < 3; x2++)
+                        int currentVal = s.board[qY * 3 + y1, qX * 3 + x1];
+                        HashSet<int> col1 = valsInColumn(qX*3+x1, qY * 3 + y1);
+                        HashSet<int> row1 = valsInRow(qY * 3 + y1, qX * 3 + x1);
+                        bool c1_old = col1.Contains(currentVal);
+                        bool r1_old = row1.Contains(currentVal);
+                    
+                        for (int y2 = 0; y2 < 3; y2++)
                         {
-                            /* loop alle mogelijke vakjes combinaties */
-                            if ((x1 != x2 || y1 != y2)&&(!s.unmovable[qY * 3 + y1, qX * 3 + x1])&&(!s.unmovable[qY * 3 + y2, qX * 3 + x2])) //punt x1,y1 != punt x2,y2
+                            for (int x2 = 0; x2 < 3; x2++)
                             {
-                                int tempVal = s.board[qY * 3 + y2, qX * 3 + x2];
-                                int col_score = 0;
-                                int row_score = 0;
-                                if(!(x1==x2))
+                                /* loop alle mogelijke vakjes combinaties */
+                                if ((x1 != x2 || y1 != y2)&&(!s.unmovable[qY * 3 + y2, qX * 3 + x2])) //punt x1,y1 != punt x2,y2
                                 {
-                                    HashSet<int> col2 = valsInColumn(qX*3+x2, qY * 3 + y2);
+                                    int tempVal = s.board[qY * 3 + y2, qX * 3 + x2];
+                                    int col_score = 0;
+                                    int row_score = 0;
+                                    if(!(x1==x2))
+                                    {
+                                        HashSet<int> col2 = valsInColumn(qX*3+x2, qY * 3 + y2);
                                     
-                                    bool c1_new = col1.Contains(tempVal);
-                                    bool c2_old = col2.Contains(tempVal);
-                                    bool c2_new = col2.Contains(currentVal);
-                                    col_score+=scorecheck(c1_old,c1_new);
-                                    col_score+=scorecheck(c2_old,c2_new);
-                                }
-                                if(!(y1==y2))
-                                {
-                                    HashSet<int> row2 = valsInRow(qY * 3 + y2, qX * 3 + x2);
-                                    bool r1_new = row1.Contains(tempVal);
-                                    bool r2_old = row2.Contains(tempVal);
-                                    bool r2_new = row2.Contains(currentVal); //kan efficienter geplaatst worden
-                                    row_score+=scorecheck(r1_old,r1_new);
-                                    row_score+=scorecheck(r2_old,r2_new);
-                                }
-                                int score = col_score+row_score;
-                                if(score<maxScore)
-                                {
-                                    bestMoves = new List<(int, int, int, int)>();
-                                    maxScore = score;
-                                    bestMoves.Add((x1, y1, x2, y2));
-                                }
-                                else if (score == maxScore)
-                                {
-                                    bestMoves.Add((x1, y1, x2, y2));
+                                        bool c1_new = col1.Contains(tempVal);
+                                        bool c2_old = col2.Contains(tempVal);
+                                        bool c2_new = col2.Contains(currentVal);
+                                        col_score+=scorecheck(c1_old,c1_new);
+                                        col_score+=scorecheck(c2_old,c2_new);
+                                    }
+                                    if(!(y1==y2))
+                                    {
+                                        HashSet<int> row2 = valsInRow(qY * 3 + y2, qX * 3 + x2);
+                                        bool r1_new = row1.Contains(tempVal);
+                                        bool r2_old = row2.Contains(tempVal);
+                                        bool r2_new = row2.Contains(currentVal); //kan efficienter geplaatst worden
+                                        row_score+=scorecheck(r1_old,r1_new);
+                                        row_score+=scorecheck(r2_old,r2_new);
+                                    }
+                                    int score = col_score+row_score;
+                                    if(score<maxScore)
+                                    {
+                                        bestMoves = new List<(int, int, int, int)>();
+                                        maxScore = score;
+                                        bestMoves.Add((x1, y1, x2, y2));
+                                    }
+                                    else if (score == maxScore)
+                                    {
+                                        bestMoves.Add((x1, y1, x2, y2));
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-            if (maxScore > 0)
-            {
-
-            }
             if (bestMoves.Count == 0)
-            {
-                //Console.WriteLine("min");
+            { // no improvement has been found
                 return -1;
             }
             int temp = r.Next(bestMoves.Count);
-
-            (int x1r, int y1r, int x2r, int y2r) = bestMoves[temp];
-
+            (int x1r, int y1r, int x2r, int y2r) = bestMoves[temp];                 //chooses a random swap from the bestMoves list
             Swap(qX * 3 + x1r, qY * 3 + y1r, qX * 3 + x2r, qY * 3 + y2r);
-            
-            //Console.WriteLine("CurrentValue: " + s.currentScore);
             s.currentScore+=maxScore;
-            //Console.WriteLine("NewValue: " + s.currentScore);
-            //Console.WriteLine("CorrectValue: " + getBoardScore());
             return s.currentScore;
         }
 
