@@ -32,7 +32,7 @@ namespace Practicum_1
             
         }
 
-        bool in_box(int row, int collumn, int v)
+        public bool in_box(int row, int collumn, int v)
         {
             //get row and collumn of the middle:
             int r = (row/3)*3+1;
@@ -51,7 +51,7 @@ namespace Practicum_1
             return false;
         }
 
-        bool in_row(int row,int v)
+        public bool in_row(int row,int v)
         {
             for(int i = 0; i<board.GetLength(0); i++)
             {
@@ -63,7 +63,7 @@ namespace Practicum_1
             return false;
         }
 
-        bool in_collumn(int collumn,int v)
+        public bool in_collumn(int collumn,int v)
         {
             for(int i = 0; i<board.GetLength(1); i++)
             {

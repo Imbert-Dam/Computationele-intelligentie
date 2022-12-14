@@ -8,67 +8,82 @@ namespace Practicum_1
     {
         public Sudoku s;
         Random r;
-        int parm;
+        int s_p;
+        int p_p;
 
-        public Solver(Sudoku sudoku , int parameter)
-        {
+        public Solver(Sudoku sudoku , int S_parm , int plateau_parm)
+        {/*
+        Constructor requires a:
+            - sudoku object
+            - int S_parm: parameter for the stepsize
+            - int plateau_parm: parameter for determining if a plateau is reached
+        */
             s = sudoku;
             r = new Random();
-            parm = parameter;
+            s_p = S_parm;
+            p_p = plateau_parm;
         }
 
         public void iteratedLocalSearch()
-        {
+        {/* iteratedLocalSearch starts the iterated local search and records
+                the amount of time that was required to solve the sudoku.
+                It also checks whether a plateau is reached. 
+        */
             Stopwatch watch = Stopwatch.StartNew(); 
             fillWithRandom();
             getBoardScore();
-            int vorige_res = s.currentScore;
+            int last_res = s.currentScore;
             int counter = 0;
             while (s.currentScore!=0)
-            {
-                if (counter>1000)
-                {
+            { /*Stops when the sudoku is solved, because when the sudoku is solved
+                    the result of the heuristic function equals zero*/
+                if (counter>p_p) 
+                { // counter > plateau parameter = randomwalking
                     walking();
                 }
                 HillClimbing();
-                if (s.currentScore == vorige_res)
-                {
+                if (s.currentScore == last_res) 
+                { // no changes
                     counter++;
-                    //s.printBoard();
                 }
-                else{
+                else
+                { // changes to the score:
                     counter = 0;
-                    vorige_res = s.currentScore;
+                    last_res = s.currentScore;
                 }
             }
             watch.Stop();
-            Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " Milliseconds");
+            Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
             Console.WriteLine("Score: " + s.currentScore);
-            getBoardScore();
-            Console.WriteLine("Echte Score: " + s.currentScore);
+            //Debugging:
+            //getBoardScore();
+            //Console.WriteLine("Echte Score: " + s.currentScore);
+            s.printBoard();
 
 
         }
-        private void HillClimbing()
-        {
+        private void HillClimbing() //rename naar FirstImprovement
+        {/* HillClimbing this is the First improvement part of the hill-climbing alg
+                it goes through all boxes and calls a function that does best-improvement
+                if the states generated are not an improvement or equal to the current state
+                it check a random next box.
+        */
             int res = -1;
-            List<(int,int)> boxxes = new List<(int,int)>{
-                (0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)
-            };
+            List<(int,int)> boxes = new List<(int,int)>{ (0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)};
             while (res == -1)
-            {
-                if (boxxes.Count!=0)
-                {
-                    int box_idx = r.Next(boxxes.Count);
-                    int qX = boxxes[box_idx].Item1; //random box_x
-                    int qY = boxxes[box_idx].Item2; //random box_y
-                    boxxes.RemoveAt(box_idx);
-                    res = HillClimbStep2(qX,qY);         
+            { // the result is -1 when no improvement or an equal score has been found in the box
+                    //this also means no swap has occured.
+                if (boxes.Count!=0)
+                { // boxes is a list with unexplored boxes.
+                    int box_idx = r.Next(boxes.Count);
+                    int qX = boxes[box_idx].Item1; // random box_x
+                    int qY = boxes[box_idx].Item2; // random box_y
+                    boxes.RemoveAt(box_idx);
+                    res = HillClimbStep2(qX,qY);   // best improvement on random box 
                 }
                 else
-                {
+                { // local minimum has been found.
                     walking();
-                    //Console.WriteLine("min min");
                     break;
                 }
 
@@ -77,17 +92,20 @@ namespace Practicum_1
             
         }
         private void walking()
-        {
-            for (int j = 0; j<parm; j++)
+        {/* walking repeats the walkingstep S times.
+        */
+            for (int j = 0; j<s_p; j++)
             {
                 RandomWalkStep();
             }
-            getBoardScore(); //misschien dit verwerken in de swap???
+            getBoardScore(); //kan dit miss efficiënter???
 
         }
 
         private void fillWithRandom()
-        {
+        {/* fillWithRandom fills a sudoku with randomly generated integers ranging from 1 up untill 9
+                but doesn't add numbers that were in the input 
+        */
             for (int qY = 0; qY < 3; qY++)
             {
                 for (int qX = 0; qX < 3; qX++)
@@ -126,33 +144,33 @@ namespace Practicum_1
                 }
             }
         }
-        // public void sud_initialise (int b , int row, int col)
-        // {
-        //     for(int hb = 0; hb<b/3;hb++)                            //horizontale boxes 0-2
-        //     {
-        //         for(int vb = 0; vb<b/3;vb++)                        //verticale boxes 0-2
-        //         {
-        //             int value = 1;                                  //reset value wnr nieuwe box wordt bezocht
-        //             for(int r = 0; r<row/3;r++)                     //visit row 0-2
-        //             {               
-        //                 for (int c =0; c<col/3;c++)                 //visit collumn 0-2
-        //                 {
-        //                     if (sudoku[r+hb*3,c+vb*3].value == 0)   //multiply rows and collumns by box number
-        //                     {
-        //                         while(in_box(sudoku[r+hb*3,c+vb*3],value)) //add until a new not used value is found
-        //                         {
-        //                             value++;
-        //                         }
-        //                         sudoku[r+hb*3,c+vb*3].value = value;
-        //                         value++; 
-        //                     }
-        //                 }
-        //             }
+        public void sud_initialise ()
+        {
+            for(int hb = 0; hb<3;hb++)                            //horizontale boxes 0-2
+            {
+                for(int vb = 0; vb<3;vb++)                        //verticale boxes 0-2
+                {
+                    int value = 1;                                  //reset value wnr nieuwe box wordt bezocht
+                    for(int r = 0; r<3;r++)                     //visit row 0-2
+                    {               
+                        for (int c =0; c<3;c++)                 //visit collumn 0-2
+                        {
+                            if (s.board[r+hb*3,c+vb*3] == 0)   //multiply rows and collumns by box number
+                            {
+                                while(s.in_box(r+hb*3,c+vb*3,value)) //add until a new not used value is found
+                                {
+                                    value++;
+                                }
+                                s.board[r+hb*3,c+vb*3] = value;
+                                value++; 
+                            }
+                        }
+                    }
 
-        //         }
+                }
 
-        //     }
-        // }
+            }
+        }
 
         public void Swap(int x1, int y1, int x2, int y2)
         {
@@ -209,7 +227,15 @@ namespace Practicum_1
             int y2 = r.Next(3);
 
             //misschien ook hier de score updaten zonder alles langs te gaan
-            Swap(qX * 3 + x1, qY * 3 + y1, qX * 3 + x2, qY * 3 + y2);
+            if (s.unmovable[qY * 3 + y1 ,qX * 3 + x1]|| s.unmovable[qY * 3 + y2 , qX * 3 + x2])
+            {
+                //Console.WriteLine("Swap failed");
+                RandomWalkStep();
+            }
+            else{
+                Swap(qX * 3 + x1, qY * 3 + y1, qX * 3 + x2, qY * 3 + y2);
+            }
+            
         }
 
         public int HillClimbStep(int qX,int qY)
@@ -323,7 +349,7 @@ namespace Practicum_1
             return s.currentScore;
         }
 
-        public int HillClimbStep2( int qX , int qY)
+        public int HillClimbStep2( int qX , int qY) //BestImprovement
         {
             int maxScore = 0;
             List<(int, int, int, int)> bestMoves = new List<(int, int, int, int)>();
@@ -381,6 +407,10 @@ namespace Practicum_1
                     }
                 }
             }
+            if (maxScore > 0)
+            {
+
+            }
             if (bestMoves.Count == 0)
             {
                 //Console.WriteLine("min");
@@ -391,11 +421,11 @@ namespace Practicum_1
             (int x1r, int y1r, int x2r, int y2r) = bestMoves[temp];
 
             Swap(qX * 3 + x1r, qY * 3 + y1r, qX * 3 + x2r, qY * 3 + y2r);
-
+            
+            //Console.WriteLine("CurrentValue: " + s.currentScore);
             s.currentScore+=maxScore;
-            //Console.WriteLine(s.currentScore);
-            //getBoardScore();
-            //Console.WriteLine(s.currentScore);
+            //Console.WriteLine("NewValue: " + s.currentScore);
+            //Console.WriteLine("CorrectValue: " + getBoardScore());
             return s.currentScore;
         }
 
