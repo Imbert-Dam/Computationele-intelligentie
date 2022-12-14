@@ -361,10 +361,14 @@ namespace Practicum_1
         public int HillClimbStep2( int qX , int qY) //BestImprovement
         {/* HillClimbStep2 is a less efficient way of doing best-improvement within a box
                 it creates a list with the best moves that have either no effect on the score or are an improvement
-                    - it itterates over all squares in the box and generates hashtables of values in the squares rows and collomns
+                    - it itterates over all movable squares in the box and generates hashtables of values in the squares rows and collomns
                         excluding the current square
-                            - for each square 
-
+                            - for each square we compare it to all the other squares
+                                we check if when these squares are swapped there is an improvement or no difference
+                                then we add this possible swap to a list if it has the same difference or in a new one if it is better.
+                then the a random move is selected swapped and the score is updated
+                - int qX: x-index of a box
+                - int qY: y-index of a box.
         */
             int maxScore = 0;
             List<(int, int, int, int)> bestMoves = new List<(int, int, int, int)>();
@@ -438,7 +442,11 @@ namespace Practicum_1
         }
 
         private int scorecheck(bool old, bool nieuw)
-        {
+        {/* scorecheck checks if the score improves or stays the same or gets worse when a certain value is inserted
+            in a certain square. It returns a -1 for improvement, 0 when it's equal and a +1 when it makes the score higher
+                - bool old: boolean if the old value is in a row or collumn
+                - bool new: boolean if the new value is in a row or collumn
+        */
             if (old && !nieuw)
             {
                 return -1;
@@ -449,21 +457,5 @@ namespace Practicum_1
             }
             return 1;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
