@@ -7,15 +7,16 @@ namespace Practicum_1
         public bool[,] unmovable;
 
         public Sudoku()
-        {
-            /* Generates Sudoku without given values */
+        { /* Generates the board of the Sudoku without given values (without input sudoku) 
+                and a bool array to check whether a value in the sudoku is fixed or not. */
             board = new int[9, 9];
             unmovable = new bool [9,9];
         }
 
         public Sudoku(string input)
-        {
-            /* Generates given Sudoku */
+        {/* The following code converts the input string into a correct sudoku representation. 
+                and a bool array to check whether a value in the sudoku is fixed or not. */
+        
             board = new int[9, 9];
             unmovable = new bool [9,9];
             string[] vals = input.Split(' ');
@@ -24,7 +25,7 @@ namespace Practicum_1
                 int temp = int.Parse(vals[i]);
                 if (temp != 0)
                 {
-                    board[i / 9, i % 9] = temp; //swap om het per rij in te lezen en niet per kollom
+                    board[i / 9, i % 9] = temp; 
                     unmovable[i / 9, i % 9] = true;
                 }
             }
@@ -32,11 +33,16 @@ namespace Practicum_1
             
         }
 
-        public bool in_box(int row, int collumn, int v)
-        {
-            //get row and collumn of the middle:
+        public bool in_box(int row, int column, int v)
+        {/* in_box checks whether a certain value is inside the box or not. 
+                - int row: index of the row of a certain square
+                - int column: index of the column of a certain square
+                - int v: value of a certain square
+            returns true if value is inside the same box.
+        */
+            // get row_idx and column_idx of the middle:
             int r = (row/3)*3+1;
-            int c = (collumn/3)*3+1;
+            int c = (column/3)*3+1;
 
             for (int i = -1; i<2; i++)
             {
@@ -52,7 +58,11 @@ namespace Practicum_1
         }
 
         public bool in_row(int row,int v)
-        {
+        {/* in_row checks whether a certain value is inside a row or not.  
+                - int row: index of the row of a certain square
+                - int v: value of a certain square
+            returns true if value is inside the same row.
+        */
             for(int i = 0; i<board.GetLength(0); i++)
             {
                 if(board[row,i]==v)
@@ -63,11 +73,15 @@ namespace Practicum_1
             return false;
         }
 
-        public bool in_collumn(int collumn,int v)
-        {
+        public bool in_column(int column,int v)
+        {/* in_column checks whether a certain value is inside a column or not.  
+                - int column: index of the column of a certain square
+                - int v: value of a certain square
+            returns true if value is inside the same column.
+        */
             for(int i = 0; i<board.GetLength(1); i++)
             {
-                if(board[i,collumn]==v)
+                if(board[i,column]==v)
                 {
                     return true;
                 }
@@ -76,8 +90,7 @@ namespace Practicum_1
         }
 
         public string Export()
-        {
-            /* Save Sudoku as string */
+        {/* Export saves the Sudoku as string , can be used for debugging */
             string res = "";
             for (int y = 0; y < 9; y++)
             {
@@ -91,7 +104,7 @@ namespace Practicum_1
         }
 
         public void printBoard()
-        {
+        {/* printBoard prints the sudoku in  a easily readable way  */
             for (int y = 0; y < 9; y++)
             {
                 string temp = "";

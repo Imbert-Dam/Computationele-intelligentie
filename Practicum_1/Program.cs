@@ -35,7 +35,7 @@ namespace Practicum_1
         }
 
         static void InitialiseExperiment(string s_string)
-        {
+        {/* InitialiseExperiment reports the difference between two ways of filling in a sudoku. */
             // Test with the more "Random" initialise:
             Sudoku s = new Sudoku(s_string);
             Solver sol = new Solver(s , S_parm, P_parm);
@@ -57,8 +57,6 @@ namespace Practicum_1
             Console.WriteLine("Spend " + watch.ElapsedTicks + " Ticks");
 
             Console.WriteLine();
-
-
         }
     }
 }

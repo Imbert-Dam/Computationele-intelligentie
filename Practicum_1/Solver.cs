@@ -154,9 +154,9 @@ namespace Practicum_1
                     int value = 1;                                  //reset value wnr nieuwe box wordt bezocht
                     for(int r = 0; r<3;r++)                     //visit row 0-2
                     {               
-                        for (int c =0; c<3;c++)                 //visit collumn 0-2
+                        for (int c =0; c<3;c++)                 //visit column 0-2
                         {
-                            if (s.board[r+hb*3,c+vb*3] == 0)   //multiply rows and collumns by box number
+                            if (s.board[r+hb*3,c+vb*3] == 0)   //multiply rows and columns by box number
                             {
                                 while(s.in_box(r+hb*3,c+vb*3,value)) //add until a new not used value is found
                                 {
@@ -185,7 +185,7 @@ namespace Practicum_1
 
         public int getBoardScore()
         {/* getBoardScore checks the whole sudoku board and calculates the heuristic values
-                for each row and collumn, then it is combined to calculate the score.
+                for each row and column, then it is combined to calculate the score.
         */
             int res = 0;
             for (int i =0; i<9; i++)
@@ -197,8 +197,8 @@ namespace Practicum_1
             return res;
         }
         public HashSet<int> valsInColumn(int x, int excludeIndex = 10)
-        {/* valsInColumn returns a hashtable with all values inside a given collumn 
-                - int x: is the index of the collumn
+        {/* valsInColumn returns a hashtable with all values inside a given column 
+                - int x: is the index of the column
                 - in excludeIndex: is the index that you want to exclude default doesn't exclude an index.
         */
             HashSet<int> res = new HashSet<int>();
@@ -214,7 +214,7 @@ namespace Practicum_1
 
         public HashSet<int> valsInRow(int y, int excludeIndex = 10)
         {/* valsInColumn returns a hashtable with all values inside a given row 
-                - int y: is the index of the collumn
+                - int y: is the index of the column
                 - in excludeIndex: is the index that you want to exclude default doesn't exclude an index.
         */
             HashSet<int> res = new HashSet<int>();
@@ -444,8 +444,8 @@ namespace Practicum_1
         private int scorecheck(bool old, bool nieuw)
         {/* scorecheck checks if the score improves or stays the same or gets worse when a certain value is inserted
             in a certain square. It returns a -1 for improvement, 0 when it's equal and a +1 when it makes the score higher
-                - bool old: boolean if the old value is in a row or collumn
-                - bool new: boolean if the new value is in a row or collumn
+                - bool old: boolean if the old value is in a row or column
+                - bool new: boolean if the new value is in a row or column
         */
             if (old && !nieuw)
             {
