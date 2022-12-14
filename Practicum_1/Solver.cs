@@ -30,7 +30,8 @@ namespace Practicum_1
                 It also checks whether a plateau is reached. 
         */
             Stopwatch watch = Stopwatch.StartNew(); 
-            fillWithRandom();
+            //fillWithRandom();
+            fillSudoku();
             getBoardScore();
             int last_res = s.currentScore;
             int counter = 0;
@@ -53,12 +54,13 @@ namespace Practicum_1
                 }
             }
             watch.Stop();
-            Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
-            Console.WriteLine("Score: " + s.currentScore);
+            Console.WriteLine($"Spend {watch.ElapsedTicks} Ticks");
+            //Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
+            //Console.WriteLine("Score: " + s.currentScore);
             //Debugging:
             //getBoardScore();
             //Console.WriteLine("Echte Score: " + s.currentScore);
-            s.printBoard();
+            //s.printBoard();
 
 
         }

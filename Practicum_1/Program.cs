@@ -11,7 +11,8 @@ namespace Practicum_1
         static int P_parm = 18;
         static void Main(string[] args)
         {
-
+            int[] S_Array = {1,2,3,4,5,6};
+            int[] P_Array = {18};
             string sudoku_file = "Sudoku_puzzels_5.txt";
             string[] lines = File.ReadAllLines(sudoku_file);
             for (int i = 1; i<lines.Length;i+=2) //ignore grid lines
@@ -24,9 +25,10 @@ namespace Practicum_1
                 
 
                 //InitialiseExperiment(stripped_line);
-                Sudoku sud = new Sudoku(stripped_line);
-                Solver solv = new Solver(sud , S_parm, P_parm);
-                solv.iteratedLocalSearch();
+                parmTuning(S_Array,P_Array,stripped_line);
+                // Sudoku sud = new Sudoku(stripped_line);
+                // Solver solv = new Solver(sud , S_parm, P_parm);
+                // solv.iteratedLocalSearch();
                 //sud.printBoard();
                 
                 
@@ -57,6 +59,29 @@ namespace Practicum_1
             Console.WriteLine("Spend " + watch.ElapsedTicks + " Ticks");
 
             Console.WriteLine();
+        }
+
+        static void parmTuning(int[] S_arr, int[] P_arr , string sud_string)
+        {/* parmTuning takes 2 arrays of values of parameters and a sudoku as a string 
+                and tests all value combinations.
+                - int[] S_arr: array with values of S
+                - int[] P_arr: array with values of P
+                - string sud_string: string which represents a sudoku.
+        */
+            int counter = 1;
+            foreach (int P in P_arr)
+            {
+                foreach(int S in S_arr)
+                {
+                    Sudoku sud = new Sudoku(sud_string);
+                    Solver solv = new Solver(sud , S, P);
+                    Console.WriteLine($"Experiment {counter} with S: {S} and P: {P}");
+                    solv.iteratedLocalSearch();
+                    Console.WriteLine();
+                    counter++;
+                }
+            }
+
         }
     }
 }
