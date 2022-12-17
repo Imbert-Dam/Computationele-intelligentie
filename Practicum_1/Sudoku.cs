@@ -5,7 +5,6 @@ namespace Practicum_1
         public int[,] board;
         public int currentScore;
         public bool[,] unmovable;
-
         public Sudoku()
         { /* Generates the board of the Sudoku without given values (without input sudoku) 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
@@ -31,6 +30,12 @@ namespace Practicum_1
             }
 
             
+        }
+
+        public Sudoku(Sudoku s)
+        { /* Generates a board that is the same as a different board, currently unused, can be used when using fill with random to compare different method on the exact same starting board */
+            board = s.board.Clone() as int[,];
+            unmovable = s.unmovable.Clone() as bool[,];
         }
 
         public bool in_box(int row, int column, int v)

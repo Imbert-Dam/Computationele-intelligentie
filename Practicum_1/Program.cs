@@ -9,6 +9,9 @@ namespace Practicum_1
     {
         static int S_parm = 5;
         static int P_parm = 18;
+
+        //static string temp1 = "";
+        //static string temp2 = "";
         static void Main(string[] args)
         {
             int[] S_Array = {1,2,3,4,5,6};
@@ -34,6 +37,8 @@ namespace Practicum_1
                 
 
             }
+            //Console.WriteLine(temp1);
+            //Console.WriteLine(temp2);
         }
 
         static void InitialiseExperiment(string s_string)
@@ -67,21 +72,40 @@ namespace Practicum_1
                 - int[] S_arr: array with values of S
                 - int[] P_arr: array with values of P
                 - string sud_string: string which represents a sudoku.
-        */
+        */  
+        
             int counter = 1;
             foreach (int P in P_arr)
             {
                 foreach(int S in S_arr)
                 {
                     Sudoku sud = new Sudoku(sud_string);
+
+                    Sudoku sud2 = new Sudoku(sud);
+            
                     Solver solv = new Solver(sud , S, P);
                     Console.WriteLine($"Experiment {counter} with S: {S} and P: {P}");
+
+                    Console.WriteLine($"Optimized");
+                    Solver solv2 = new Solver(sud2, S, P);
+
+                    solv2.iteratedLocalSearchOptimized();
+                    //temp1 += solv2.iteratedLocalSearchOptimized().ToString();
+                    //temp1 += ",";
+
+                    Console.WriteLine($"Pre-optimization");
                     solv.iteratedLocalSearch();
+                    //temp2 += solv.iteratedLocalSearch().ToString();
+                    //temp2 += ",";
+
                     Console.WriteLine();
+                    
                     counter++;
                 }
             }
-
+            //temp1 += "\n";
+            //temp2 += "\n";
         }
+        
     }
 }
