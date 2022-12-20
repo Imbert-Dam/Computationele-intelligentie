@@ -30,7 +30,7 @@ namespace Practicum_1
                 It also checks whether a plateau is reached. 
         */
             Stopwatch watch = Stopwatch.StartNew(); 
-            //fillWithRandom();
+            //fillWithRandom(); //not used because of experimenting and optimization
             fillSudoku();
             getBoardScore();
             int last_res = s.currentScore;
@@ -54,14 +54,6 @@ namespace Practicum_1
                 }
             }
             watch.Stop();
-            Console.WriteLine($"Spend {watch.ElapsedTicks} Ticks");
-            //Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
-            //Console.WriteLine("Score: " + s.currentScore);
-            //Debugging:
-            //getBoardScore();
-            //Console.WriteLine("Echte Score: " + s.currentScore);
-            //s.printBoard();
-
             return watch.ElapsedTicks;
         }
 
@@ -71,7 +63,7 @@ namespace Practicum_1
                 It also checks whether a plateau is reached. 
         */
             Stopwatch watch = Stopwatch.StartNew(); 
-            //fillWithRandom();
+            //fillWithRandom(); //not used because of experimenting and optimization
             fillSudoku();
             getBoardScore();
             int last_res = s.currentScore;
@@ -95,7 +87,7 @@ namespace Practicum_1
                 }
             }
             watch.Stop();
-            Console.WriteLine($"Spend {watch.ElapsedTicks} Ticks");
+            //Console.WriteLine($"Spend {watch.ElapsedTicks} Ticks");
 
             //Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
             //Console.WriteLine("Score: " + s.currentScore);
@@ -132,7 +124,6 @@ namespace Practicum_1
                     walking();
                     break;
                 }
-
 
             }
             
@@ -172,8 +163,7 @@ namespace Practicum_1
             {
                 RandomWalkStep();
             }
-            getBoardScore(); //kan dit miss efficiënter???
-
+            getBoardScore(); 
         }
 
         private void walkingOptimized()
@@ -229,7 +219,7 @@ namespace Practicum_1
             }
         }
         public void fillSudoku ()
-        {/* fillSudoku fills a sudoku with the lowest integer that isn't already in the box
+        {/* fillSudoku fills a sudoku with the lowest integer that isn't already in the box, is a bit more efficient but less random
         */
             for(int hb = 0; hb<3;hb++)                            //horizontale boxes 0-2
             {
@@ -339,7 +329,7 @@ namespace Practicum_1
             
         }
         public int HillClimbStep( int qX , int qY) //BestImprovement
-        {/* HillClimbStep2 is a less efficient way of doing best-improvement within a box
+        {/* HillClimbStep is a less efficient way of doing best-improvement within a box
                 it creates a list with the best moves that have either no effect on the score or are an improvement
                     - it itterates over all movable squares in the box and generates hashtables of values in the squares rows and collomns
                         excluding the current square
@@ -437,6 +427,7 @@ namespace Practicum_1
 
         public HashSet<int> valsInRowOptimized(int y, int excludeSection = 4)
         {
+            //Used by optimization excludes all values from a box instead of just one value, why is explained in HillClimbStepOptimized
             HashSet<int> res = new HashSet<int>();
             for (int x = 0; x < 9; x++)
             {

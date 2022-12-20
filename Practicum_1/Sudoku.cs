@@ -33,7 +33,7 @@ namespace Practicum_1
         }
 
         public Sudoku(Sudoku s)
-        { /* Generates a board that is the same as a different board, currently unused, can be used when using fill with random to compare different method on the exact same starting board */
+        { /* Generates a board that is the same as a different board can be used when using fill with random to compare different method on the exact same starting board */
             board = s.board.Clone() as int[,];
             unmovable = s.unmovable.Clone() as bool[,];
         }
