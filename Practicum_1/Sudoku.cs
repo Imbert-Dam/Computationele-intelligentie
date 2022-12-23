@@ -15,7 +15,6 @@ namespace Practicum_1
         public Sudoku(string input)
         {/* The following code converts the input string into a correct sudoku representation. 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
-        
             board = new int[9, 9];
             unmovable = new bool [9,9];
             string[] vals = input.Split(' ');
@@ -27,15 +26,7 @@ namespace Practicum_1
                     board[i / 9, i % 9] = temp; 
                     unmovable[i / 9, i % 9] = true;
                 }
-            }
-
-            
-        }
-
-        public Sudoku(Sudoku s)
-        { /* Generates a board that is the same as a different board can be used when using fill with random to compare different method on the exact same starting board */
-            board = s.board.Clone() as int[,];
-            unmovable = s.unmovable.Clone() as bool[,];
+            }  
         }
 
         public bool in_box(int row, int column, int v)

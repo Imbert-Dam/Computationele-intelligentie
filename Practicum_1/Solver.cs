@@ -87,20 +87,10 @@ namespace Practicum_1
                 }
             }
             watch.Stop();
-            //Console.WriteLine($"Spend {watch.ElapsedTicks} Ticks");
-
-            //Console.WriteLine("Spend " + watch.ElapsedMilliseconds + " MilliSeconds");
-            //Console.WriteLine("Score: " + s.currentScore);
-            //Debugging:
-            //getBoardScore();
-            //Console.WriteLine("Echte Score: " + s.currentScore);
-            //s.printBoard();
-
             return watch.ElapsedTicks;
-
         }
 
-        private void HillClimbing() //rename naar FirstImprovement
+        private void HillClimbing()
         {/* HillClimbing this is the First improvement part of the hill-climbing alg
                 it goes through all boxes and calls a function that does best-improvement
                 if the states generated are not an improvement or equal to the current state
@@ -150,15 +140,11 @@ namespace Practicum_1
                     walkingOptimized();
                     break;
                 }
-
-
             }
-            
         }
 
         private void walking()
-        {/* walking repeats the walkingstep S times.
-        */
+        {/* walking repeats the walkingstep S times.*/
             for (int j = 0; j<s_p; j++)
             {
                 RandomWalkStep();
@@ -167,7 +153,7 @@ namespace Practicum_1
         }
 
         private void walkingOptimized()
-        {
+        {/* walkingOptimized repeats the walkingstep S times.*/
             for (int j = 0; j<s_p; j++)
             {
                 RandomWalkStepOptimized();
@@ -201,8 +187,6 @@ namespace Practicum_1
                             }
                         }
                     }
-
-
                     for (int x = 0; x < 3; x++)
                     {
                         for (int y = 0; y < 3; y++)
@@ -241,9 +225,7 @@ namespace Practicum_1
                             }
                         }
                     }
-
                 }
-
             }
         }
 
@@ -315,8 +297,6 @@ namespace Practicum_1
             int y1 = r.Next(3);
             int x2 = r.Next(3);
             int y2 = r.Next(3);
-
-
             
             if (s.unmovable[qY * 3 + y1 ,qX * 3 + x1] || s.unmovable[qY * 3 + y2 , qX * 3 + x2])
             { // the random generated square in the sudokuboard is one of the numbers in the input
@@ -328,7 +308,7 @@ namespace Practicum_1
             }
             
         }
-        public int HillClimbStep( int qX , int qY) //BestImprovement
+        public int HillClimbStep( int qX , int qY)
         {/* HillClimbStep is a less efficient way of doing best-improvement within a box
                 it creates a list with the best moves that have either no effect on the score or are an improvement
                     - it itterates over all movable squares in the box and generates hashtables of values in the squares rows and collomns
@@ -412,8 +392,7 @@ namespace Practicum_1
         }
 
         public HashSet<int> valsInColumnOptimized(int x, int excludeSection = 4)
-        {
-            //Used by optimization excludes all values from a box instead of just one value, why is explained in HillClimbStepOptimized
+        {//Used by optimization excludes all values from a box instead of just one value, why is explained in HillClimbStepOptimized
             HashSet<int> res = new HashSet<int>();
             for (int y =0; y<9; y++)
             {
@@ -426,8 +405,7 @@ namespace Practicum_1
         }
 
         public HashSet<int> valsInRowOptimized(int y, int excludeSection = 4)
-        {
-            //Used by optimization excludes all values from a box instead of just one value, why is explained in HillClimbStepOptimized
+        {//Used by optimization excludes all values from a box instead of just one value, why is explained in HillClimbStepOptimized
             HashSet<int> res = new HashSet<int>();
             for (int x = 0; x < 9; x++)
             {
@@ -439,7 +417,7 @@ namespace Practicum_1
             return res;
         }
 
-        public int HillClimbStepOptimized(int qX , int qY) //BestImprovement
+        public int HillClimbStepOptimized(int qX , int qY)
         {
             int maxScore = 0;
             List<(int, int, int, int)> bestMoves = new List<(int, int, int, int)>();
@@ -567,24 +545,19 @@ namespace Practicum_1
             int x1 = r.Next(3);
             int y1 = r.Next(3);
 
-            //Don't bother generating the other box if the firs tone is wrong
+            //Don't bother generating the other box if the first one is wrong
             if (s.unmovable[qY * 3 + y1 ,qX * 3 + x1])
             { 
                 RandomWalkStep();
                 return;
             }
-
             int x2 = r.Next(3);
             int y2 = r.Next(3);
-
-
-            
             if (s.unmovable[qY * 3 + y2 , qX * 3 + x2])
             {
                 RandomWalkStep();
                 return;
             }
-            
             Swap(qX * 3 + x1, qY * 3 + y1, qX * 3 + x2, qY * 3 + y2);
         }
 
