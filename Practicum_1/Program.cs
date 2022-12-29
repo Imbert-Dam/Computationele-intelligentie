@@ -50,6 +50,11 @@ namespace Practicum_1
                         Solver solv = new Solver(sud , S_parm, P_parm);
                         solv.iteratedLocalSearchOptimized();
                         solv.s.printBoard();
+                        Sudoku sud2 = new Sudoku(stripped_line);
+                        Solver2 solv2 = new Solver2(sud2);
+                        solv2.ChronologicalBacktracking();
+                        solv2.s.printBoard();
+
                     }
                 
 
