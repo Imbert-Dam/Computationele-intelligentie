@@ -48,9 +48,10 @@ namespace Practicum_1
                         /* The following lines solves sudokus with the best results: */
                         Sudoku sud = new Sudoku(stripped_line);
                         Solver solv = new Solver(sud , S_parm, P_parm);
+                        sud.printBoard();
                         solv.iteratedLocalSearchOptimized();
                         solv.s.printBoard();
-                        Sudoku sud2 = new Sudoku(stripped_line);
+                        Sudoku sud2 = new Sudoku(stripped_line,"CBT");
                         Solver2 solv2 = new Solver2(sud2);
                         solv2.ChronologicalBacktracking();
                         solv2.s.printBoard();

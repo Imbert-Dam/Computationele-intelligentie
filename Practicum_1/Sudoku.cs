@@ -5,6 +5,7 @@ namespace Practicum_1
         public int[,] board;
         public int currentScore;
         public bool[,] unmovable;
+        public HashSet<int>[,] domain;
         public Sudoku()
         { /* Generates the board of the Sudoku without given values (without input sudoku) 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
@@ -12,19 +13,58 @@ namespace Practicum_1
             unmovable = new bool [9,9];
         }
 
-        public Sudoku(string input)
+        public Sudoku(string input, string solver = "ILS")
         {/* The following code converts the input string into a correct sudoku representation. 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
             board = new int[9, 9];
             unmovable = new bool [9,9];
+            if(solver == "CBT")
+            {
+                domain = new HashSet<int>[9,9];
+            }
             string[] vals = input.Split(' ');
             for (int i = 0; i < vals.Length; i++)
             {
                 int temp = int.Parse(vals[i]);
+                int row = i / 9;
+                int collumn = i%9;
+
                 if (temp != 0)
                 {
-                    board[i / 9, i % 9] = temp; 
-                    unmovable[i / 9, i % 9] = true;
+                    board[row, collumn] = temp; 
+                    unmovable[row , collumn] = true;
+                    if(solver == "CBT")
+                    {
+                        // i/9 = row
+                        // i%9 = collumn
+                        for(int j = 0; j<9;j++)
+                        {
+                            int by = row/3;
+                            int bx = collumn/3;
+                            int y = by*3 + j/3;
+                            int x = bx*3 + j%3;
+                            if(domain[row,j] == null)
+                            {
+                                domain[row,j] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                            }
+                            if(domain[j,collumn] == null)
+                            {
+                                domain[j,collumn] = new HashSet<int>{1,2,3,4,5,6,7,8,9};   
+                            }
+                            if (domain[y,x] == null)
+                            {
+                                domain[y,x] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                            }
+                            domain[j,collumn].Remove(temp);
+                            domain[row,j].Remove(temp);
+                            domain[y,x].Remove(temp);
+                        }
+
+                    }
+                }
+                else if (solver =="CBT"&& domain[row,collumn] == null)
+                {
+                    domain[row,collumn] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
                 }
             }  
         }
