@@ -24,7 +24,7 @@ namespace Practicum_1
                     /*Following lines are used for formatting the Result.txt file*/
                         //sw.WriteLine("Sudoku: Experiment: S: P: Ticks:");        //parmtune
                         //sw.WriteLine("FillSudoku: FillRandom:");                 //Initialisetest 
-                        //sw.WriteLine("Optimized: Unoptimized:");                 //Optimizationtest
+                        sw.WriteLine("Optimized: Unoptimized: ILS:");                 //Optimizationtest
                     for (int i = 1; i<lines.Length;i+=2) //ignore grid lines
                     { 
                         string stripped_line = lines[i];
@@ -43,18 +43,18 @@ namespace Practicum_1
 
                         /* The following line tests the speed difference between the optimized
                                 and unoptimized version: */
-                        //SpeedTest(stripped_line,sw);
+                        SpeedTestCBT(stripped_line,sw);
 
                         /* The following lines solves sudokus with the best results: */
-                        Sudoku sud = new Sudoku(stripped_line);
-                        Solver solv = new Solver(sud , S_parm, P_parm);
-                        //sud.printBoard();
-                        solv.iteratedLocalSearchOptimized();
-                        solv.s.printBoard();
-                        Sudoku sud2 = new Sudoku(stripped_line,"CBT");
-                        Solver2 solv2 = new Solver2(sud2);
-                        solv2.ChronologicalBacktracking();
-                        solv2.s.printBoard();
+                        // Sudoku sud = new Sudoku(stripped_line);
+                        // Solver solv = new Solver(sud , S_parm, P_parm);
+                        // sud.printBoard();
+                        // solv.iteratedLocalSearchOptimized();
+                        // solv.s.printBoard();
+                        // Sudoku sud2 = new Sudoku(stripped_line,"CBT");
+                        // Solver2 solv2 = new Solver2(sud2);
+                        // solv2.ChronologicalBacktracking();
+                        // solv2.s.printBoard();
 
                     }
                 
@@ -89,8 +89,32 @@ namespace Practicum_1
             }
             sw.WriteLine($"{ticks_f} {ticks_r}");
         }
+        static void SpeedTestCBT(string s, StreamWriter sw)
+        { /*SpeedTest tests the speed of the unoptimized and optimized versions of the
+                iterated local search, it is done by solving the same sudoku n times and
+                then taking the average.*/
+            long unopti = 0;
+            long opti = 0;
+            long ils = 0;
+            for (int i = 0; i<Max_n; i++)
+            {
+                //Test with less optimized:
+                Sudoku sud = new Sudoku(s,"CBT");
+                Solver2 solv = new Solver2(sud);
+                unopti += solv.ChronologicalBacktracking();
+                //Test with more optimized:
+                Sudoku su = new Sudoku(s);
+                Solver2 sol = new Solver2(su);
+                opti += sol.Backtracking();
+                //Test wit ILS
+                Sudoku sudo = new Sudoku(s);
+                Solver so = new Solver(sudo,S_parm,P_parm);
+                ils += so.iteratedLocalSearchOptimized();
+            }
+            sw.WriteLine($"{opti/Max_n} {unopti/Max_n} {ils/Max_n}");
+        }
 
-        static void SpeedTest(string s, StreamWriter sw)
+        static void SpeedTestILS(string s, StreamWriter sw)
         { /*SpeedTest tests the speed of the unoptimized and optimized versions of the
                 iterated local search, it is done by solving the same sudoku n times and
                 then taking the average.*/
