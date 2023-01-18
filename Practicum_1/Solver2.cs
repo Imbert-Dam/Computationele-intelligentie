@@ -64,7 +64,7 @@ namespace Practicum_1
             }
 
             for (int i =1; i<10; i++)
-            {
+            { //ipv 1-9 loop domein hashset/list
 
                 if (s.domain[cy,cx].Remove(i))
                 {
@@ -76,7 +76,7 @@ namespace Practicum_1
                         int by = cy/3;
                         int bx = cx/3;
                         int y = by*3 + j/3;
-                        int x = bx*3 + j%3;
+                        int x = bx*3 + j%3; // functie maken in sudoku class gezien 2x aangeroepen
 
                         
                         if(!(cy==j)&&s.domain[j,cx].Remove(i))
@@ -85,11 +85,8 @@ namespace Practicum_1
                         }
                         if(s.domain[j,cx].Count == 0 && s.board[j,cx] == 0)
                         {
-                            //counter--;
-                            //s.board[cy,cx] = 0;
                             empty = true;
                             break;
-                            // return false;
                         }   
                         if(!(cx==j)&&s.domain[cy,j].Remove(i))
                         {
@@ -97,11 +94,8 @@ namespace Practicum_1
                         }
                         if(s.domain[cy,j].Count == 0 && s.board[cy,j] == 0)
                         {
-                            //counter--;
-                            //s.board[cy,cx] = 0;
                             empty = true;
                             break;
-                            // return false;
                         }  
                         if(!((cy==y)&&(cx==x))&&s.domain[y,x].Remove(i))
                         {
@@ -109,11 +103,8 @@ namespace Practicum_1
                         }
                         if(s.domain[y,x].Count == 0 && s.board[y,x] == 0)
                         {
-                            //counter--;
-                            //s.board[cy,cx] = 0;
                             empty =true;
                             break;
-                            // return false;
                         }
 
                     }
@@ -126,22 +117,13 @@ namespace Practicum_1
                     s.board[cy,cx] = 0;
                     if(st.Count!=0)
                     {
-                        (int t,_, _, _) = st.Peek();
-                        while(t == counter)
+                        
+                        while(st.Count!=0 && st.Peek().Item1 == counter)
                         {
-                            (t,int v,int c_y,int c_x)= st.Pop();
+                            (int t,int v,int c_y,int c_x)= st.Pop();
                             s.domain[c_y,c_x].Add(v);
-                            if(!(st.Count!=0))
-                            {
-                                break;
-                            }
-                            (t,_, _, _) = st.Peek();
-
-                            
                         }
-                    }
-                    
-                    
+                    } 
                 }
             }
             return false;
