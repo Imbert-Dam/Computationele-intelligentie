@@ -17,54 +17,36 @@ namespace Practicum_1
         {/* The following code converts the input string into a correct sudoku representation. 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
             board = new int[9, 9];
-            unmovable = new bool [9,9];
-            if(solver == "CBT")
+            if(solver == "ILS")
+            {
+                unmovable = new bool [9,9];
+            }
+            else if(solver == "CBT")
             {
                 domain = new HashSet<int>[9,9];
             }
             string[] vals = input.Split(' ');
             for (int i = 0; i < vals.Length; i++)
             {
-                int temp = int.Parse(vals[i]);
+                int value = int.Parse(vals[i]);
                 int row = i / 9;
-                int collumn = i%9;
+                int column = i%9;
 
-                if (temp != 0)
+                if (value != 0)
                 {
-                    board[row, collumn] = temp; 
-                    unmovable[row , collumn] = true;
-                    if(solver == "CBT")
+                    board[row, column] = value; 
+                    if (solver == "ILS")
                     {
-                        // i/9 = row
-                        // i%9 = collumn
-                        for(int j = 0; j<9;j++)
-                        {
-                            int by = row/3;
-                            int bx = collumn/3;
-                            int y = by*3 + j/3;
-                            int x = bx*3 + j%3;
-                            if(domain[row,j] == null)
-                            {
-                                domain[row,j] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
-                            }
-                            if(domain[j,collumn] == null)
-                            {
-                                domain[j,collumn] = new HashSet<int>{1,2,3,4,5,6,7,8,9};   
-                            }
-                            if (domain[y,x] == null)
-                            {
-                                domain[y,x] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
-                            }
-                            domain[j,collumn].Remove(temp);
-                            domain[row,j].Remove(temp);
-                            domain[y,x].Remove(temp);
-                        }
-
+                        unmovable[row , column] = true;
+                    }
+                    else if(solver == "CBT")
+                    {
+                        nodeConsistency(row , column ,value);
                     }
                 }
-                else if (solver =="CBT"&& domain[row,collumn] == null)
+                else if (solver =="CBT"&& domain[row,column] == null)
                 {
-                    domain[row,collumn] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                    domain[row,column] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
                 }
             }  
         }
@@ -124,6 +106,50 @@ namespace Practicum_1
             }
             return false;
         }
+
+        private void nodeConsistency(int row, int column, int value)
+        {/*
+        nodeConsistency(int row, int column, int value) takes as input the coördinates of a square 
+            and its containing value. It loops over all other squares in its row column 
+            and box and if the domain is empty of a neighbor a new domain is created. 
+            Then the value of the original square is removed from the domains.
+        */
+            for(int j = 0; j<9;j++)
+            {
+                (int x,int y) = boxCoordinates(column,row,j);
+                if(domain[row,j] == null )
+                {
+                    domain[row,j] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                }
+                if(domain[j,column] == null )
+                {
+                    domain[j,column] = new HashSet<int>{1,2,3,4,5,6,7,8,9};   
+                }
+                if (domain[y,x] == null )
+                {
+                    domain[y,x] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                }
+                domain[j,column].Remove(value);
+                domain[row,j].Remove(value);
+                domain[y,x].Remove(value);
+            }
+        }
+
+        public (int,int) boxCoordinates(int cx, int cy , int j)
+        {/* 
+        boxCoordinates(int cx, int cy , int j) maps the integer j (ranging from 0-8)
+            and the coordinates of the original square to a location in its box.
+            0|1|2
+            -----
+            3|4|5
+            -----
+            6|7|8
+            It returns the coördinates of the square in comparison to the board. 
+         */
+            int y = (cy/3)*3 + j/3;
+            int x = (cx/3)*3 + j%3;
+            return(x,y);
+        } 
 
         public string Export()
         {/* Export saves the Sudoku as string , can be used for debugging */

@@ -113,12 +113,13 @@ namespace Practicum_1
         */
             for(int j = 0; j<9;j++)
             {
-                int by = cy/3;
-                int bx = cx/3;
-                int y = by*3 + j/3;
-                int x = bx*3 + j%3; // functie maken in sudoku class gezien 2x aangeroepen
+                // int by = cy/3;
+                // int bx = cx/3;
+                // int y = by*3 + j/3;
+                // int x = bx*3 + j%3; // functie maken in sudoku class gezien 2x aangeroepen
 
-                        
+                (int x,int y) = s.boxCoordinates(cx,cy,j);
+
                 if(!(cy==j)&&s.domain[j,cx].Remove(i))
                 {
                     st.Push((counter,i,j,cx));
@@ -168,8 +169,30 @@ namespace Practicum_1
                 }
             }
             return (-1,-1); //complete sudoku
+        }
 
-            
+        private (int,int) NextSquare2(int c_y, int c_x)
+        {/*
+        NextSquare() returns the next empty square if the sudoku is finished (-1,-1) is returned.
+        */
+            for(int x = c_x; x<9; x++)
+            {   
+                if(s.board[c_y,x]==0)
+                    {
+                        return((x,c_y));
+                    }
+            }
+            for (int y = c_y+1; y<9; y++)
+            {
+                for (int x = 0; x<9; x++)
+                {
+                    if(s.board[y,x]==0)
+                    {
+                        return((x,y));
+                    }
+                }
+            }
+            return (-1,-1); //complete sudoku
         }
     }
 }
