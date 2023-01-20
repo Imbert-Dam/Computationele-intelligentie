@@ -9,6 +9,7 @@ namespace Practicum_1
         public Sudoku s;
         private Stack<(int,int,int,int)> st = new Stack<(int, int, int, int)>();
         private int counter = 0;
+        public int backwards = 0;
         public Solver2(Sudoku sudoku)
         {/*
         Constructor requires a:
@@ -62,6 +63,7 @@ namespace Practicum_1
                         return true;
                     }
                     //if this line is reached there was an incorrect number filled in
+                    backwards++;
                     s.board[y,x] = 0;
                 }
             }
@@ -93,6 +95,7 @@ namespace Practicum_1
                         return true;
                     }
                     counter--;
+                    backwards++;
                     s.board[cy,cx] = 0;
                     while(st.Count!=0 && st.Peek().Item1 == counter)
                     {

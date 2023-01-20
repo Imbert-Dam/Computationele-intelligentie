@@ -24,7 +24,7 @@ namespace Practicum_1
                     /*Following lines are used for formatting the Result.txt file*/
                         //sw.WriteLine("Sudoku: Experiment: S: P: Ticks:");        //parmtune
                         //sw.WriteLine("FillSudoku: FillRandom:");                 //Initialisetest 
-                        sw.WriteLine("Optimized: Unoptimized: ILS:");                 //Optimizationtest
+                        sw.WriteLine("Optimized: Unoptimized: ILS: BackwardCBT: BackwardBT:");                 //Optimizationtest
                     for (int i = 1; i<lines.Length;i+=2) //ignore grid lines
                     { 
                         string stripped_line = lines[i];
@@ -96,6 +96,8 @@ namespace Practicum_1
             long unopti = 0;
             long opti = 0;
             long ils = 0;
+            long b = 0;
+            long ba = 0;
             for (int i = 0; i<Max_n; i++)
             {
                 //Test wit ILS
@@ -106,13 +108,15 @@ namespace Practicum_1
                 Sudoku sud = new Sudoku(s,"CBT");
                 Solver2 solv = new Solver2(sud);
                 unopti += solv.ChronologicalBacktracking();
+                ba+= solv.backwards;
                 //Test with more optimized:
                 Sudoku su = new Sudoku(s);
                 Solver2 sol = new Solver2(su);
                 opti += sol.Backtracking();
+                b+=sol.backwards;
 
             }
-            sw.WriteLine($"{opti/Max_n} {unopti/Max_n} {ils/Max_n}");
+            sw.WriteLine($"{opti/Max_n} {unopti/Max_n} {ils/Max_n} {ba/Max_n} {b/Max_n}");
         }
 
         static void SpeedTestILS(string s, StreamWriter sw)
