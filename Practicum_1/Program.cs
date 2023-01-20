@@ -45,7 +45,7 @@ namespace Practicum_1
                                 and unoptimized version: */
                         SpeedTestCBT(stripped_line,sw);
 
-                        /* The following lines solves sudokus with the best results: */
+                        // /* The following lines solves sudokus with the best results: */
                         // Sudoku sud = new Sudoku(stripped_line);
                         // Solver solv = new Solver(sud , S_parm, P_parm);
                         // //sud.printBoard();
@@ -98,6 +98,10 @@ namespace Practicum_1
             long ils = 0;
             for (int i = 0; i<Max_n; i++)
             {
+                //Test wit ILS
+                Sudoku sudo = new Sudoku(s);
+                Solver so = new Solver(sudo,S_parm,P_parm);
+                ils += so.iteratedLocalSearchOptimized();
                 //Test with less optimized:
                 Sudoku sud = new Sudoku(s,"CBT");
                 Solver2 solv = new Solver2(sud);
@@ -106,10 +110,7 @@ namespace Practicum_1
                 Sudoku su = new Sudoku(s);
                 Solver2 sol = new Solver2(su);
                 opti += sol.Backtracking();
-                //Test wit ILS
-                Sudoku sudo = new Sudoku(s);
-                Solver so = new Solver(sudo,S_parm,P_parm);
-                ils += so.iteratedLocalSearchOptimized();
+
             }
             sw.WriteLine($"{opti/Max_n} {unopti/Max_n} {ils/Max_n}");
         }

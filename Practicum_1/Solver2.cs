@@ -70,7 +70,7 @@ namespace Practicum_1
 
         private bool CBT()
         {/*
-        BT() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
+        CBT() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
             in the domain
             through recursion and forward checking it checks if this number is possible, 
             if not it returns all elements of the domain and it raises the number.
@@ -113,11 +113,6 @@ namespace Practicum_1
         */
             for(int j = 0; j<9;j++)
             {
-                // int by = cy/3;
-                // int bx = cx/3;
-                // int y = by*3 + j/3;
-                // int x = bx*3 + j%3; // functie maken in sudoku class gezien 2x aangeroepen
-
                 (int x,int y) = s.boxCoordinates(cx,cy,j);
 
                 if(!(cy==j)&&s.domain[j,cx].Remove(i))
