@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Practicum_1
 {
     public class Sudoku
@@ -6,6 +8,10 @@ namespace Practicum_1
         public int currentScore;
         public bool[,] unmovable;
         public HashSet<int>[,] domain;
+
+        public uint[,] domainBA;
+
+        public (int,int) nextEmpty;
         public Sudoku()
         { /* Generates the board of the Sudoku without given values (without input sudoku) 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
@@ -13,7 +19,7 @@ namespace Practicum_1
             unmovable = new bool [9,9];
         }
 
-        public Sudoku(string input, string solver = "ILS")
+        public Sudoku(string input, string solver = "ILS", bool useBitArray = false)
         {/* The following code converts the input string into a correct sudoku representation. 
                 and a bool array to check whether a value in the sudoku is fixed or not. */
             board = new int[9, 9];
@@ -23,7 +29,12 @@ namespace Practicum_1
             }
             else if(solver == "CBT")
             {
-                domain = new HashSet<int>[9,9];
+                if (useBitArray) {
+                    domainBA = new uint[9,9];
+                }
+                else {
+                    domain = new HashSet<int>[9,9];
+                }
             }
             string[] vals = input.Split(' ');
             for (int i = 0; i < vals.Length; i++)
@@ -41,12 +52,26 @@ namespace Practicum_1
                     }
                     else if(solver == "CBT")
                     {
-                        nodeConsistency(row , column ,value);
+                        if (useBitArray) {
+                            nodeConsistencyBA(row, column, value);
+                        }
+                        else {
+                            nodeConsistency(row , column ,value);
+                        }
                     }
                 }
-                else if (solver =="CBT"&& domain[row,column] == null)
+                else if (solver =="CBT")
                 {
-                    domain[row,column] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                    if (useBitArray) {
+                        if (domainBA[row,column] == 0) {
+                            domainBA[row,column] = 0b1_1111_1111;
+                        }
+                    }
+                    else {
+                        if (domain[row,column] == null) {
+                             domain[row,column] = new HashSet<int>{1,2,3,4,5,6,7,8,9};
+                        }
+                    }
                 }
             }  
         }
@@ -135,6 +160,34 @@ namespace Practicum_1
             }
         }
 
+        private void nodeConsistencyBA(int row, int column, int value)
+        {/*
+        nodeConsistency(int row, int column, int value) takes as input the coördinates of a square 
+            and its containing value. It loops over all other squares in its row column 
+            and box and if the domain is empty of a neighbor a new domain is created. 
+            Then the value of the original square is removed from the domains.
+        */
+            for(int j = 0; j<9;j++)
+            {
+                (int x,int y) = boxCoordinates(column,row,j);
+                if(domainBA[row,j] == 0 )
+                {
+                    domainBA[row,j] = 0b1_1111_1111;
+                }
+                if(domainBA[j,column] == 0 )
+                {
+                    domainBA[j,column] = 0b1_1111_1111;   
+                }
+                if (domainBA[y,x] == 0 )
+                {
+                    domainBA[y,x] = 0b1_1111_1111;
+                }
+                BARemove(j,column,value);
+                BARemove(row,j,value);
+                BARemove(y,x,value);
+            }
+        }
+
         public (int,int) boxCoordinates(int cx, int cy , int j)
         {/* 
         boxCoordinates(int cx, int cy , int j) maps the integer j (ranging from 0-8)
@@ -150,6 +203,44 @@ namespace Practicum_1
             int x = (cx/3)*3 + j%3;
             return(x,y);
         } 
+        public void setToNonZero(int cy, int cx, int j){
+            //This check was always true therefor not needed
+            //bool temp = false;
+            //if (board[cy,cx] == 0){
+            //    temp = true;
+            //}
+            board[cy,cx] = j;
+            //if (temp) {
+            findNextEmpty(cy, cx+1);
+            //}
+        }
+
+        public void findNextEmpty(int cy, int cx){
+            if (cx > 8) {
+                cx = 0;
+                cy++;
+            }
+            if (cy > 8) {
+                nextEmpty = (-1,-1);
+                return;
+            }
+            if (board[cy,cx] == 0){
+                nextEmpty = (cx,cy);
+            }
+            else{
+                findNextEmpty(cy, cx+1);
+            }
+        }
+
+        public void setToZero(int cy, int cx){
+            board[cy,cx] = 0;
+            if (cy < nextEmpty.Item1) {
+                nextEmpty = (cy,cx);
+            }
+            else if (cy == nextEmpty.Item1 && cx < nextEmpty.Item2) {
+                nextEmpty = (cy,cx);
+            }
+        }
 
         public string Export()
         {/* Export saves the Sudoku as string , can be used for debugging */
@@ -185,6 +276,25 @@ namespace Practicum_1
                 }
             }
             Console.WriteLine();
+        }
+
+        public bool BARemove(int cy, int cx, int i){
+            uint temp1 = domainBA[cy,cx];
+            uint temp2 = ((uint) 1 << i-1);
+            uint temp3 = temp1 & temp2;
+            if (temp3 == 0){
+                return false;
+            }
+            domainBA[cy,cx] = domainBA[cy,cx] ^ ((uint)1 << i-1);
+            return true;
+        }
+
+        public void BAAdd(int cy, int cx, int i){
+            domainBA[cy,cx] = domainBA[cy,cx] | ((uint)1 << i-1);
+        }
+
+        public bool BAIsEmpty(int cy, int cx){
+            return domainBA[cy,cx] == 0;
         }
     }
 }
