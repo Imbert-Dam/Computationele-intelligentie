@@ -135,6 +135,39 @@ namespace Practicum_1
             { // base case: no square is empty
                 return true;
             }
+            foreach(int val in s.domain[cy,cx])
+            {
+                s.board[cy,cx] = val;
+                // st.Push((counter,i,cy,cx));
+                if(!forwardCheck(val,cy,cx)&&CBT())
+                {
+                    return true;
+                }
+                counter--;
+                backwards++;
+                s.board[cy,cx] = 0;
+                while(st.Count!=0 && st.Peek().Item1 == counter)
+                {
+                    (int t,int v,int c_y,int c_x)= st.Pop();
+                    s.domain[c_y,c_x].Add(v);
+                }
+            }
+            return false;
+
+        }
+
+        private bool CBT0()
+        {/*
+        CBT() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
+            in the domain
+            through recursion and forward checking it checks if this number is possible, 
+            if not it returns all elements of the domain and it raises the number.
+        */
+            (int cx,int cy) = NextSquare();
+            if (cx == -1)
+            { // base case: no square is empty
+                return true;
+            }
 
             for (int i =1; i<10; i++)
             { //ipv 1-9 loop domein hashset/list
@@ -210,7 +243,7 @@ namespace Practicum_1
             {
                 (int x,int y) = s.boxCoordinates(cx,cy,j);
 
-                if(!(cy==j)&&s.domain[j,cx].Remove(i))
+                if(s.board[j,cx]==0&&s.domain[j,cx].Remove(i))
                 {
                     st.Push((counter,i,j,cx));
                     if(s.domain[j,cx].Count == 0 && s.board[j,cx] == 0)
@@ -219,7 +252,7 @@ namespace Practicum_1
                         return true;
                     }   
                 }
-                if(!(cx==j)&&s.domain[cy,j].Remove(i))
+                if(s.board[cy,j]==0&&s.domain[cy,j].Remove(i))
                 {
                     st.Push((counter,i,cy,j));
                     if(s.domain[cy,j].Count == 0 && s.board[cy,j] == 0)
@@ -228,7 +261,7 @@ namespace Practicum_1
                         return true;
                     }  
                 }
-                if(!((cy==y)&&(cx==x))&&s.domain[y,x].Remove(i))
+                if(s.board[y,x]==0&&s.domain[y,x].Remove(i))
                 {
                     st.Push((counter,i,y,x));
                     if(s.domain[y,x].Count == 0 && s.board[y,x] == 0)

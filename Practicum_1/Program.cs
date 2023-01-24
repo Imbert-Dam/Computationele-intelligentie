@@ -43,7 +43,7 @@ namespace Practicum_1
 
                         /* The following line tests the speed difference between the optimized
                                 and unoptimized version: */
-                        SpeedTestCBT(stripped_line,sw);
+                        //SpeedTestCBT(stripped_line,sw);
 
                         // /* The following lines solves sudokus with the best results: */
                         // Sudoku sud = new Sudoku(stripped_line);
@@ -51,10 +51,10 @@ namespace Practicum_1
                         // sud.printBoard();
                         // solv.iteratedLocalSearchOptimized();
                         // solv.s.printBoard();
-                        // Sudoku sud2 = new Sudoku(stripped_line,"CBT", true);
-                        // Solver2 solv2 = new Solver2(sud2);
-                        // solv2.ChronologicalBacktrackingOptimized();
-                        // solv2.s.printBoard();
+                        Sudoku sud2 = new Sudoku(stripped_line,"CBT", false);
+                        Solver2 solv2 = new Solver2(sud2);
+                        solv2.ChronologicalBacktracking();
+                        solv2.s.printBoard();
 
                     }
                 
