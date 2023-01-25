@@ -243,28 +243,28 @@ namespace Practicum_1
             {
                 (int x,int y) = s.boxCoordinates(cx,cy,j);
 
-                if(s.board[j,cx]==0&&s.domain[j,cx].Remove(i))
+                if(s.board[j,cx]==0 && s.domain[j,cx].Remove(i))
                 {
                     st.Push((counter,i,j,cx));
-                    if(s.domain[j,cx].Count == 0 && s.board[j,cx] == 0)
+                    if(s.domain[j,cx].Count == 0)
                     {
                         counter++;
                         return true;
                     }   
                 }
-                if(s.board[cy,j]==0&&s.domain[cy,j].Remove(i))
+                if(s.board[cy,j]==0 && s.domain[cy,j].Remove(i))
                 {
                     st.Push((counter,i,cy,j));
-                    if(s.domain[cy,j].Count == 0 && s.board[cy,j] == 0)
+                    if(s.domain[cy,j].Count == 0)
                     {
                         counter++;
                         return true;
                     }  
                 }
-                if(s.board[y,x]==0&&s.domain[y,x].Remove(i))
+                if(s.board[y,x]==0 && s.domain[y,x].Remove(i))
                 {
                     st.Push((counter,i,y,x));
-                    if(s.domain[y,x].Count == 0 && s.board[y,x] == 0)
+                    if(s.domain[y,x].Count == 0)
                     {
                         counter++;
                         return true;
@@ -286,28 +286,28 @@ namespace Practicum_1
             {
                 (int x,int y) = s.boxCoordinates(cx,cy,j);
 
-                if(!(cy==j) && s.BARemove(j,cx,i))
+                if(s.board[j,cx] == 0 &&  s.BARemove(j,cx,i))
                 {
                     st.Push((counter,i,j,cx));
-                    if(s.board[j,cx] == 0 && s.BAIsEmpty(j, cx))
+                    if(s.BAIsEmpty(j, cx))
                     {
                         counter++;
                         return true;
                     }   
                 }
-                if(!(cx==j) && s.BARemove(cy,j,i))
+                if(s.board[cy,j] == 0 && s.BARemove(cy,j,i))
                 {
                     st.Push((counter,i,cy,j));
-                    if(s.board[cy,j] == 0 && s.BAIsEmpty(cy,j))
+                    if( s.BAIsEmpty(cy,j))
                     {
                         counter++;
                         return true;
                     }  
                 }
-                if(!((cy==y)&&(cx==x)) && s.BARemove(y,x,i))
+                if(s.board[y,x] == 0 && s.BARemove(y,x,i))
                 {
                     st.Push((counter,i,y,x));
-                    if(s.board[y,x] == 0 && s.BAIsEmpty(y,x))
+                    if( s.BAIsEmpty(y,x))
                     {
                         counter++;
                         return true;

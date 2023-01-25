@@ -51,10 +51,16 @@ namespace Practicum_1
                         // sud.printBoard();
                         // solv.iteratedLocalSearchOptimized();
                         // solv.s.printBoard();
+                        Sudoku sud = new Sudoku(stripped_line,"CBT", true);
+                        Solver2 solv = new Solver2(sud);
+                        solv.ChronologicalBacktrackingOptimized();
+                        solv.s.printBoard();
                         Sudoku sud2 = new Sudoku(stripped_line,"CBT", false);
                         Solver2 solv2 = new Solver2(sud2);
                         solv2.ChronologicalBacktracking();
                         solv2.s.printBoard();
+
+                        
 
                     }
                 
