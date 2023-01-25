@@ -13,16 +13,15 @@ namespace Practicum_1
 
         static void Main(string[] args)
         {
-            string sudoku_file = "Sudoku_puzzels.txt";
+            string sudoku_file = "Sudoku_puzzels_.txt";
             string[] lines = File.ReadAllLines(sudoku_file);
             
             using (StreamWriter sw = new StreamWriter("Results.txt"))
                 {
                     /*Following lines are used for formatting the Result.txt file*/
-                        //sw.WriteLine("Optimized: Unoptimized: ILS: BackwardCBT: BackwardBT:");                 //Optimizationtest
-                        //sw.WriteLine("Optimized: Unoptimized:");
+                        sw.WriteLine("Optimized: Unoptimized:");
                         //sw.WriteLine("CBT: BT:");
-                        sw.WriteLine("CBT: ILS:");
+                        //sw.WriteLine("CBT: ILS:");
                     for (int i = 1; i<lines.Length;i+=2) //ignore grid lines
                     { 
                         string stripped_line = lines[i];
@@ -32,13 +31,21 @@ namespace Practicum_1
                         }
                         /* The following line tests the speed difference between the optimized
                                 and unoptimized version: */
-                        //SpeedTest(stripped_line,sw);
+                        SpeedTest(stripped_line,sw);
                         
+                        /* The following line tests the speed difference between backtracking
+                                and chronological backtracking */
                         //BTvsCBT(stripped_line,sw);
                         
-                        CBTvsILS(stripped_line,sw);
+                        /* The following line tests the speed difference between iterated local search
+                                and chronological backtracking */
+                        //CBTvsILS(stripped_line,sw);
 
-                        // /* The following lines solves sudokus with the best results: */
+                        /* The following lines solves sudokus with the best version: */
+                        Sudoku sud = new Sudoku(stripped_line,"CBT",true);
+                        Solver2 solv = new Solver2(sud);
+                        solv.ChronologicalBacktrackingOptimized();
+                        solv.s.printBoard();
                         // Sudoku sud = new Sudoku(stripped_line);
                         // Solver solv = new Solver(sud , S_parm, P_parm);
                         // sud.printBoard();
