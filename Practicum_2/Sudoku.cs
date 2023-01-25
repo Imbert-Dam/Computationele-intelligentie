@@ -19,9 +19,15 @@ namespace Practicum_1
             unmovable = new bool [9,9];
         }
 
-        public Sudoku(string input, string solver = "ILS", bool useBitArray = false)
+        public Sudoku(string input, string solver = "ILS", bool useIntRepr = false)
         {/* The following code converts the input string into a correct sudoku representation. 
-                and a bool array to check whether a value in the sudoku is fixed or not. */
+                and a bool array to check whether a value in the sudoku is fixed or not. 
+                
+                if useIntRepr is true the sudoke will be initialized using uints to represent domain instead of HashSets
+                where the last 9 bits of the uint are used to store whether a number in in the domain.
+                so the domain [3,4,9] would be
+                1_0000_1100
+                */
             board = new int[9, 9];
             if(solver == "ILS")
             {
@@ -29,7 +35,7 @@ namespace Practicum_1
             }
             else if(solver == "CBT")
             {
-                if (useBitArray) {
+                if (useIntRepr) {
                     domainBA = new uint[9,9];
                 }
                 else {
@@ -52,8 +58,8 @@ namespace Practicum_1
                     }
                     else if(solver == "CBT")
                     {
-                        if (useBitArray) {
-                            nodeConsistencyBA(row, column, value);
+                        if (useIntRepr) {
+                            nodeConsistencyIntRepr(row, column, value);
                         }
                         else {
                             nodeConsistency(row , column ,value);
@@ -62,7 +68,7 @@ namespace Practicum_1
                 }
                 else if (solver =="CBT")
                 {
-                    if (useBitArray) {
+                    if (useIntRepr) {
                         if (domainBA[row,column] == 0) {
                             domainBA[row,column] = 0b1_1111_1111;
                         }
@@ -160,12 +166,14 @@ namespace Practicum_1
             }
         }
 
-        private void nodeConsistencyBA(int row, int column, int value)
+        private void nodeConsistencyIntRepr(int row, int column, int value)
         {/*
         nodeConsistency(int row, int column, int value) takes as input the coördinates of a square 
             and its containing value. It loops over all other squares in its row column 
             and box and if the domain is empty of a neighbor a new domain is created. 
             Then the value of the original square is removed from the domains.
+
+            This version stores domains as uints
         */
             for(int j = 0; j<9;j++)
             {
@@ -182,9 +190,9 @@ namespace Practicum_1
                 {
                     domainBA[y,x] = 0b1_1111_1111;
                 }
-                BARemove(j,column,value);
-                BARemove(row,j,value);
-                BARemove(y,x,value);
+                RemoveIntRepr(j,column,value);
+                RemoveIntRepr(row,j,value);
+                RemoveIntRepr(y,x,value);
             }
         }
 
@@ -204,6 +212,10 @@ namespace Practicum_1
             return(x,y);
         } 
         public void setToNonZero(int cy, int cx, int j){
+            /*
+                sets a value to a nonzero value, then updates the nextEmpty variable.
+            */
+
             //This check was always true therefor not needed
             //bool temp = false;
             //if (board[cy,cx] == 0){
@@ -216,6 +228,9 @@ namespace Practicum_1
         }
 
         public void findNextEmpty(int cy, int cx){
+            /*
+                finds the next empty slot starting the search from cy,cx. And stores the resulting value in the nextEmpty variable
+            */
             if (cx > 8) {
                 cx = 0;
                 cy++;
@@ -233,6 +248,9 @@ namespace Practicum_1
         }
 
         public void setToZero(int cy, int cx){
+            /*
+                sets a location on the board to 0, then checks if it needs to update nextEmpty
+            */
             board[cy,cx] = 0;
             if (cy < nextEmpty.Item1) {
                 nextEmpty = (cy,cx);
@@ -240,6 +258,43 @@ namespace Practicum_1
             else if (cy == nextEmpty.Item1 && cx < nextEmpty.Item2) {
                 nextEmpty = (cy,cx);
             }
+        }
+
+        public bool RemoveIntRepr(int cy, int cx, int i){
+            /*
+                removes a value from the domain of the int representation, return whether that value was there before
+            */
+
+            // (uint) 1 << i-1) gets a number with only the bit of the number we're removing set to 1.
+            uint bitToRemove = (uint) 1 << i-1;
+            // domainBA[cy,cx] & that number will have all 0's besides the number we're removing, which will be 1 if it was in the domain.
+
+            if ((domainBA[cy,cx] & bitToRemove) == 0){
+                //number was not present in domain
+                return false;
+            }
+            //since the bit of the the number we're removing is always 1 here, xor'ing it will set it to 0.
+            domainBA[cy,cx] = domainBA[cy,cx] ^ bitToRemove;
+            return true;
+        }
+
+        public void AddIntRepr(int cy, int cx, int i){
+            /*
+                adds a value to the domain of the int representation.
+            */
+
+            // (uint) 1 << i-1) gets a number with only the bit of the number we're adding set to 1.
+            // or'ing this with the domain will set that bit to 1.
+            domainBA[cy,cx] = domainBA[cy,cx] | ((uint)1 << i-1);
+        }
+
+        public bool IsEmptyIntRepr(int cy, int cx){
+            /*
+                checks if the domain of a space is empty
+            */
+
+            //the domain is empty if all the bits are 0, which means the number is 0.
+            return domainBA[cy,cx] == 0;
         }
 
         public string Export()
@@ -276,25 +331,6 @@ namespace Practicum_1
                 }
             }
             Console.WriteLine();
-        }
-
-        public bool BARemove(int cy, int cx, int i){
-            uint temp1 = domainBA[cy,cx];
-            uint temp2 = ((uint) 1 << i-1);
-            uint temp3 = temp1 & temp2;
-            if (temp3 == 0){
-                return false;
-            }
-            domainBA[cy,cx] = domainBA[cy,cx] ^ ((uint)1 << i-1);
-            return true;
-        }
-
-        public void BAAdd(int cy, int cx, int i){
-            domainBA[cy,cx] = domainBA[cy,cx] | ((uint)1 << i-1);
-        }
-
-        public bool BAIsEmpty(int cy, int cx){
-            return domainBA[cy,cx] == 0;
         }
     }
 }

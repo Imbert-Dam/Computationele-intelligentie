@@ -210,7 +210,7 @@ namespace Practicum_1
 
             for (int i =1; i<10; i++)
             { 
-                if (s.BARemove(cy,cx,i))
+                if (s.RemoveIntRepr(cy,cx,i))
                 {
                     s.setToNonZero(cy,cx,i);
                     st.Push((counter,i,cy,cx));
@@ -224,7 +224,7 @@ namespace Practicum_1
                     while(st.Count!=0 && st.Peek().Item1 == counter)
                     {
                         (int t,int v,int c_y,int c_x)= st.Pop();
-                        s.BAAdd(c_y,c_x,v);
+                        s.AddIntRepr(c_y,c_x,v);
                     }
                     
                 }
@@ -286,28 +286,28 @@ namespace Practicum_1
             {
                 (int x,int y) = s.boxCoordinates(cx,cy,j);
 
-                if(s.board[j,cx] == 0 &&  s.BARemove(j,cx,i))
+                if(s.board[j,cx] == 0 &&  s.RemoveIntRepr(j,cx,i))
                 {
                     st.Push((counter,i,j,cx));
-                    if(s.BAIsEmpty(j, cx))
+                    if(s.IsEmptyIntRepr(j, cx))
                     {
                         counter++;
                         return true;
                     }   
                 }
-                if(s.board[cy,j] == 0 && s.BARemove(cy,j,i))
+                if(s.board[cy,j] == 0 && s.RemoveIntRepr(cy,j,i))
                 {
                     st.Push((counter,i,cy,j));
-                    if( s.BAIsEmpty(cy,j))
+                    if( s.IsEmptyIntRepr(cy,j))
                     {
                         counter++;
                         return true;
                     }  
                 }
-                if(s.board[y,x] == 0 && s.BARemove(y,x,i))
+                if(s.board[y,x] == 0 && s.RemoveIntRepr(y,x,i))
                 {
                     st.Push((counter,i,y,x));
-                    if( s.BAIsEmpty(y,x))
+                    if( s.IsEmptyIntRepr(y,x))
                     {
                         counter++;
                         return true;
