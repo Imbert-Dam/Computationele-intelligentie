@@ -59,6 +59,7 @@ namespace Practicum_1
                         Solver2 solv2 = new Solver2(sud2);
                         solv2.ChronologicalBacktracking();
                         solv2.s.printBoard();
+                        
 
                         
 
@@ -97,7 +98,7 @@ namespace Practicum_1
         }
         static void SpeedTestCBT(string s, StreamWriter sw)
         { /*SpeedTest tests the speed of the unoptimized and optimized versions of the
-                iterated local search, it is done by solving the same sudoku n times and
+                chronological backtracking, it is done by solving the same sudoku n times and
                 then taking the average.*/
             long unopti = 0;
             long opti = 0;
