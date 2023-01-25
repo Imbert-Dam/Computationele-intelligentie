@@ -55,17 +55,15 @@ namespace Practicum_1
                         // Solver2 solv = new Solver2(sud);
                         // solv.ChronologicalBacktrackingOptimized();
                         // solv.s.printBoard();
-                        // Sudoku sud2 = new Sudoku(stripped_line,"CBT", false);
+                        // Sudoku sud2 = new Sudoku(stripped_line);
                         // Solver2 solv2 = new Solver2(sud2);
-                        // solv2.ChronologicalBacktracking();
+                        // solv2.BacktrackingOptimized();
                         // solv2.s.printBoard();
-                        
-
-                        
-
+                        // if(solv.s.Export()!=solv2.s.Export())
+                        // {
+                        //     continue;
+                        // }
                     }
-                
-
                 }
         }
         static void SpeedTest(string s, StreamWriter sw)
