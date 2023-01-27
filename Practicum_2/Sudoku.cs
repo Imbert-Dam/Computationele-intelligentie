@@ -9,7 +9,7 @@ namespace Practicum_1
         public bool[,] unmovable;
         public HashSet<int>[,] domain;
 
-        public uint[,] domainBA;
+        public uint[,] domainIntRepr;
 
         public (int,int) nextEmpty;
         public Sudoku()
@@ -36,7 +36,7 @@ namespace Practicum_1
             else if(solver == "CBT")
             {
                 if (useIntRepr) {
-                    domainBA = new uint[9,9];
+                    domainIntRepr = new uint[9,9];
                 }
                 else {
                     domain = new HashSet<int>[9,9];
@@ -69,8 +69,8 @@ namespace Practicum_1
                 else if (solver =="CBT")
                 {
                     if (useIntRepr) {
-                        if (domainBA[row,column] == 0) {
-                            domainBA[row,column] = 0b1_1111_1111;
+                        if (domainIntRepr[row,column] == 0) {
+                            domainIntRepr[row,column] = 0b1_1111_1111;
                         }
                     }
                     else {
@@ -178,17 +178,17 @@ namespace Practicum_1
             for(int j = 0; j<9;j++)
             {
                 (int x,int y) = boxCoordinates(column,row,j);
-                if(domainBA[row,j] == 0 )
+                if(domainIntRepr[row,j] == 0 )
                 {
-                    domainBA[row,j] = 0b1_1111_1111;
+                    domainIntRepr[row,j] = 0b1_1111_1111;
                 }
-                if(domainBA[j,column] == 0 )
+                if(domainIntRepr[j,column] == 0 )
                 {
-                    domainBA[j,column] = 0b1_1111_1111;   
+                    domainIntRepr[j,column] = 0b1_1111_1111;   
                 }
-                if (domainBA[y,x] == 0 )
+                if (domainIntRepr[y,x] == 0 )
                 {
-                    domainBA[y,x] = 0b1_1111_1111;
+                    domainIntRepr[y,x] = 0b1_1111_1111;
                 }
                 RemoveIntRepr(j,column,value);
                 RemoveIntRepr(row,j,value);
@@ -267,14 +267,14 @@ namespace Practicum_1
 
             // (uint) 1 << i-1) gets a number with only the bit of the number we're removing set to 1.
             uint bitToRemove = (uint) 1 << i-1;
-            // domainBA[cy,cx] & that number will have all 0's besides the number we're removing, which will be 1 if it was in the domain.
+            // domainIntRepr[cy,cx] & that number will have all 0's besides the number we're removing, which will be 1 if it was in the domain.
 
-            if ((domainBA[cy,cx] & bitToRemove) == 0){
+            if ((domainIntRepr[cy,cx] & bitToRemove) == 0){
                 //number was not present in domain
                 return false;
             }
             //since the bit of the the number we're removing is always 1 here, xor'ing it will set it to 0.
-            domainBA[cy,cx] = domainBA[cy,cx] ^ bitToRemove;
+            domainIntRepr[cy,cx] = domainIntRepr[cy,cx] ^ bitToRemove;
             return true;
         }
 
@@ -285,7 +285,7 @@ namespace Practicum_1
 
             // (uint) 1 << i-1) gets a number with only the bit of the number we're adding set to 1.
             // or'ing this with the domain will set that bit to 1.
-            domainBA[cy,cx] = domainBA[cy,cx] | ((uint)1 << i-1);
+            domainIntRepr[cy,cx] = domainIntRepr[cy,cx] | ((uint)1 << i-1);
         }
 
         public bool IsEmptyIntRepr(int cy, int cx){
@@ -294,7 +294,7 @@ namespace Practicum_1
             */
 
             //the domain is empty if all the bits are 0, which means the number is 0.
-            return domainBA[cy,cx] == 0;
+            return domainIntRepr[cy,cx] == 0;
         }
 
         public string Export()

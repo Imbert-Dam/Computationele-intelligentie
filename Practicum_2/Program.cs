@@ -46,23 +46,6 @@ namespace Practicum_1
                         Solver2 solv = new Solver2(sud);
                         solv.ChronologicalBacktrackingOptimized();
                         solv.s.printBoard();
-                        // Sudoku sud = new Sudoku(stripped_line);
-                        // Solver solv = new Solver(sud , S_parm, P_parm);
-                        // sud.printBoard();
-                        // solv.iteratedLocalSearchOptimized();
-                        // solv.s.printBoard();
-                        // Sudoku sud = new Sudoku(stripped_line,"CBT", true);
-                        // Solver2 solv = new Solver2(sud);
-                        // solv.ChronologicalBacktrackingOptimized();
-                        // solv.s.printBoard();
-                        // Sudoku sud2 = new Sudoku(stripped_line);
-                        // Solver2 solv2 = new Solver2(sud2);
-                        // solv2.BacktrackingOptimized();
-                        // solv2.s.printBoard();
-                        // if(solv.s.Export()!=solv2.s.Export())
-                        // {
-                        //     continue;
-                        // }
                     }
                 }
         }
@@ -74,14 +57,12 @@ namespace Practicum_1
             Sudoku sud = new Sudoku(s,"CBT");
             Solver2 solv = new Solver2(sud);
             long unopti = solv.ChronologicalBacktracking();               
+            
             //Test with more optimized:
             Sudoku su = new Sudoku(s,"CBT",true);
             Solver2 sol = new Solver2(su);
             long opti = sol.ChronologicalBacktrackingOptimized();
-
             sw.WriteLine($"{opti} {unopti}");
-            
-
         }
 
         static void BTvsCBT(string s, StreamWriter sw)
@@ -92,13 +73,11 @@ namespace Practicum_1
             Solver2 solv = new Solver2(sud);
             long cbt = solv.ChronologicalBacktrackingOptimized();
             
-            
             //Test with Backtracking:
             Sudoku su = new Sudoku(s);
             Solver2 sol = new Solver2(su);
             long bt = sol.BacktrackingOptimized();                
             
-
             sw.WriteLine($"{cbt} {bt} {solv.backwards} {sol.backwards}");
         }          
 
@@ -116,18 +95,14 @@ namespace Practicum_1
                 so.iteratedLocalSearchOptimized();
                 w1.Stop();
                 ils+=w1.ElapsedTicks;
-
             }
-
-                //Test with ChronologicalBacktracking:
-                Stopwatch w2 = Stopwatch.StartNew();
-                Sudoku su = new Sudoku(s,"CBT",true);
-                Solver2 sol = new Solver2(su);
-                sol.ChronologicalBacktrackingOptimized();
-                w2.Stop();
-                long cbt = w2.ElapsedTicks;
-
-            
+            //Test with ChronologicalBacktracking:
+            Stopwatch w2 = Stopwatch.StartNew();
+            Sudoku su = new Sudoku(s,"CBT",true);
+            Solver2 sol = new Solver2(su);
+            sol.ChronologicalBacktrackingOptimized();
+            w2.Stop();
+            long cbt = w2.ElapsedTicks;
             sw.WriteLine($"{cbt} {ils/Max_n}");
         }
         

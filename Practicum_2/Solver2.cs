@@ -122,43 +122,9 @@ namespace Practicum_1
             }
             return false;
         }
-
-        private bool CBT()
-        {/*
-        CBT() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
-            in the domain
-            through recursion and forward checking it checks if this number is possible, 
-            if not it returns all elements of the domain and it raises the number.
-        */
-            (int cx,int cy) = NextSquare();
-            if (cx == -1)
-            { // base case: no square is empty
-                return true;
-            }
-            foreach(int val in s.domain[cy,cx])
-            {
-                s.board[cy,cx] = val;
-                // st.Push((counter,i,cy,cx));
-                if(!forwardCheck(val,cy,cx)&&CBT())
-                {
-                    return true;
-                }
-                counter--;
-                backwards++;
-                s.board[cy,cx] = 0;
-                while(st.Count!=0 && st.Peek().Item1 == counter)
-                {
-                    (int t,int v,int c_y,int c_x)= st.Pop();
-                    s.domain[c_y,c_x].Add(v);
-                }
-            }
-            return false;
-
-        }
-
         private bool CBT0()
-        {/*
-        CBT() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
+        {/* Older version
+        CBT0() gets the next empty square and fills in a number ranging from 1 up untill 9 if it is
             in the domain
             through recursion and forward checking it checks if this number is possible, 
             if not it returns all elements of the domain and it raises the number.
@@ -170,7 +136,7 @@ namespace Practicum_1
             }
 
             for (int i =1; i<10; i++)
-            { //ipv 1-9 loop domein hashset/list
+            { 
 
                 if (s.domain[cy,cx].Remove(i))
                 {
@@ -188,11 +154,39 @@ namespace Practicum_1
                         (int t,int v,int c_y,int c_x)= st.Pop();
                         s.domain[c_y,c_x].Add(v);
                     }
-                    
                 }
             }
             return false;
 
+        }
+        private bool CBT()
+        {/*
+        CBT() gets the next empty square and fills in a the lowest number in the domain
+            through recursion and forward checking it checks if this number is possible, 
+            if not it returns all elements of the domain and it raises the number.
+        */
+            (int cx,int cy) = NextSquare();
+            if (cx == -1)
+            { // base case: no square is empty
+                return true;
+            }
+            foreach(int val in s.domain[cy,cx])
+            {
+                s.board[cy,cx] = val;
+                if(!forwardCheck(val,cy,cx)&&CBT())
+                {
+                    return true;
+                }
+                counter--;
+                backwards++;
+                s.board[cy,cx] = 0;
+                while(st.Count!=0 && st.Peek().Item1 == counter)
+                {
+                    (int t,int v,int c_y,int c_x)= st.Pop();
+                    s.domain[c_y,c_x].Add(v);
+                }
+            }
+            return false;
         }
 
         private bool CBTOptimized()
@@ -214,7 +208,7 @@ namespace Practicum_1
                 {
                     s.setToNonZero(cy,cx,i);
                     st.Push((counter,i,cy,cx));
-                    if(!forwardCheckOptimized(i,cy,cx)&&CBTOptimized())
+                    if(!forwardCheckOptimized(i,cy,cx)&&CBTOptimized()) //first forward check then recursion
                     {
                         return true;
                     }
@@ -226,11 +220,9 @@ namespace Practicum_1
                         (int t,int v,int c_y,int c_x)= st.Pop();
                         s.AddIntRepr(c_y,c_x,v);
                     }
-                    
                 }
             }
             return false;
-
         }
 
         private bool forwardCheck(int i , int cy, int cx)
@@ -316,7 +308,6 @@ namespace Practicum_1
             }
             counter++;
             return false;
-            
         }
 
         private (int,int) NextSquare()
@@ -334,7 +325,6 @@ namespace Practicum_1
                 }
             }
             return (-1,-1); //complete sudoku
-            
         }
 
         private (int,int) NextSquareOptimized()
@@ -342,30 +332,6 @@ namespace Practicum_1
         NextSquare() returns the next empty square if the sudoku is finished (-1,-1) is returned.
         */
             return s.nextEmpty;
-        }
-
-        private (int,int) NextSquare2(int c_y, int c_x)
-        {/*
-        NextSquare() returns the next empty square if the sudoku is finished (-1,-1) is returned.
-        */
-            for(int x = c_x; x<9; x++)
-            {   
-                if(s.board[c_y,x]==0)
-                    {
-                        return((x,c_y));
-                    }
-            }
-            for (int y = c_y+1; y<9; y++)
-            {
-                for (int x = 0; x<9; x++)
-                {
-                    if(s.board[y,x]==0)
-                    {
-                        return((x,y));
-                    }
-                }
-            }
-            return (-1,-1); //complete sudoku
         }
     }
 }
