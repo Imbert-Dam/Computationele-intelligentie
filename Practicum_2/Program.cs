@@ -134,7 +134,7 @@ namespace Practicum_1
             Stopwatch w3 = Stopwatch.StartNew();
             Sudoku sudok = new Sudoku(s);
             Solver2 solv = new Solver2(sudok);
-            sol.BacktrackingOptimized();
+            solv.BacktrackingOptimized();
             w3.Stop();
             long bt = w3.ElapsedTicks;
             sw.WriteLine($"{bt} {cbt} {ils/Max_n}");
