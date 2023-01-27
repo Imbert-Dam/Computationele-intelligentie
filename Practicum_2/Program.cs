@@ -13,7 +13,7 @@ namespace Practicum_1
 
         static void Main(string[] args)
         {
-            string sudoku_file = "Sudoku_puzzels_.txt";
+            string sudoku_file = "Sudoku_puzzels_5.txt";
             string[] lines = File.ReadAllLines(sudoku_file);
             
             using (StreamWriter sw = new StreamWriter("Results.txt"))
