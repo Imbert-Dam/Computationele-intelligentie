@@ -22,7 +22,7 @@ namespace Practicum_1
                         //sw.WriteLine("Optimized: Unoptimized:");
                         //sw.WriteLine("CBT: BT: CBTbacktracks: BTbacktracks:");
                         //sw.WriteLine("CBT: ILS:");
-                        sw.WriteLine("BT: CBT: ILS:");
+                        //sw.WriteLine("BT: CBT: ILS:");
                     for (int i = 1; i<lines.Length;i+=2) //ignore grid lines
                     { 
                         string stripped_line = lines[i];
@@ -44,7 +44,7 @@ namespace Practicum_1
 
                         /* The following line tests the speed difference between iterated local search, backtracking 
                                 and chronological backtracking */
-                        BTvsCBTvsILS(stripped_line,sw);
+                        //BTvsCBTvsILS(stripped_line,sw);
 
                         /* The following lines solves sudokus with the best version: */
                         Sudoku sud = new Sudoku(stripped_line,"CBT",true);
